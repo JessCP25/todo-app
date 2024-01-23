@@ -18,8 +18,8 @@
       <ul class="todo-list">
         <li *ngFor="let task of tasks(); index as i">
           <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label> {{task}} </label>
+            <input class="toggle" [checked]="task.completed" (change)="changeState(i)"type="checkbox" />
+            <label> {{task.title}} </label>
             <button (click)="deleteTask(i)" class="destroy"></button>
           </div>
           <input class="edit" value="Buy a unicorn" />
