@@ -7,7 +7,7 @@ import { Task } from '../../models/task.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
 export class HomeComponent {
   tasks = signal<Task[]>([
@@ -39,15 +39,27 @@ export class HomeComponent {
       id: Date.now(),
       title,
       completed: false,
-    }
+    };
     this.tasks.update((tasks) => [...tasks, newTask]);
   }
 
-  changeState(idTask: number) {
-    this.tasks()[idTask].completed = true;
+  updateTask(idTask: number) {
+    this.tasks.update((tasks) => {
+      return tasks.map((task, position) => {
+        if (position === idTask ) {
+          return {
+            ...task,
+            completed: !task.completed,
+          };
+        }
+        return task;
+      });
+    });
   }
 
   deleteTask(index: number) {
-    this.tasks.update((tasks) => tasks.filter((task, position) => position !== index))
+    this.tasks.update((tasks) =>
+      tasks.filter((task, position) => position !== index)
+    );
   }
 }
