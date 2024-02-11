@@ -39,7 +39,8 @@ export class HomeComponent {
   });
 
   changeHandler() {
-    if (this.newTaskCtrl.invalid || !this.newTaskCtrl.value.trim().length) return;
+    if (this.newTaskCtrl.invalid || !this.newTaskCtrl.value.trim().length)
+      return;
 
     const newTask = this.newTaskCtrl.value.trim();
     this.addTask(newTask);
@@ -73,5 +74,38 @@ export class HomeComponent {
     this.tasks.update((tasks) =>
       tasks.filter((task, position) => position !== index)
     );
+  }
+
+  updateTaskEditingMode(idTask: number) {
+    this.tasks.update((tasks) => {
+      return tasks.map((task, position) => {
+        if (position === idTask) {
+          return {
+            ...task,
+            editing: true
+          };
+        }
+        return {
+          ...task,
+          editing: false
+        };
+      });
+    });
+  }
+
+  updateTaskText(idTask: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.tasks.update((tasks) => {
+      return tasks.map((task, position) => {
+        if (position === idTask) {
+          return {
+            ...task,
+            title: input.value,
+            editing: false
+          };
+        }
+        return task;
+      });
+    });
   }
 }

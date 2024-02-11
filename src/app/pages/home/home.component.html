@@ -17,7 +17,12 @@
     <!-- This section should be hidden by default and shown when there are todos -->
     <section class="main">
       <ul class="todo-list">
-        <li [class.completed]="task.completed" *ngFor="let task of tasks(); index as i">
+        <li
+          (dblclick)="updateTaskEditingMode(i)"
+          [class.editing]="task.editing"
+          [class.completed]="task.completed"
+          *ngFor="let task of tasks(); index as i"
+        >
           <div class="view">
             <input
               class="toggle"
@@ -28,7 +33,7 @@
             <label> {{ task.title }} </label>
             <button (click)="deleteTask(i)" class="destroy"></button>
           </div>
-          <input class="edit" value="Buy a unicorn" />
+          <input class="edit" (keydown.enter)="updateTaskText(i, $event)" [value]="task.title" />
         </li>
         <!-- <li class="completed">
           <div class="view">
@@ -65,7 +70,6 @@
           >items</ng-container
         >
         <ng-template #item>item</ng-template>
-
       </span>
       <!-- Remove this if you don't implement routing -->
       <ul class="filters">
