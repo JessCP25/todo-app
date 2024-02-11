@@ -21,7 +21,7 @@
           (dblclick)="updateTaskEditingMode(i)"
           [class.editing]="task.editing"
           [class.completed]="task.completed"
-          *ngFor="let task of tasks(); index as i"
+          *ngFor="let task of taskByFilter(); index as i"
         >
           <div class="view">
             <input
@@ -33,7 +33,11 @@
             <label> {{ task.title }} </label>
             <button (click)="deleteTask(i)" class="destroy"></button>
           </div>
-          <input class="edit" (keydown.enter)="updateTaskText(i, $event)" [value]="task.title" />
+          <input
+            class="edit"
+            (keydown.enter)="updateTaskText(i, $event)"
+            [value]="task.title"
+          />
         </li>
         <!-- <li class="completed">
           <div class="view">
@@ -65,7 +69,7 @@
     <footer class="footer">
       <!-- This should be `0 items left` by default -->
       <span class="todo-count"
-        ><strong> {{ tasks().length }} </strong>
+        ><strong> {{ taskByFilter().length }} </strong>
         <ng-container *ngIf="tasks().length !== 1; else item"
           >items</ng-container
         >
@@ -74,13 +78,23 @@
       <!-- Remove this if you don't implement routing -->
       <ul class="filters">
         <li>
-          <a routerLink="/" class="selected">All</a>
+          <a (click)="changeFilter('all')" [class.selected]="filter() === 'all'"
+            >All</a
+          >
         </li>
         <li>
-          <a routerLink="/pending">Pending</a>
+          <a
+            (click)="changeFilter('pending')"
+            [class.selected]="filter() === 'pending'"
+            >Pending</a
+          >
         </li>
         <li>
-          <a routerLink="/completed">Completed</a>
+          <a
+            (click)="changeFilter('completed')"
+            [class.selected]="filter() === 'completed'"
+            >Completed</a
+          >
         </li>
       </ul>
       <!-- Hidden if no completed items are left ↓ -->
