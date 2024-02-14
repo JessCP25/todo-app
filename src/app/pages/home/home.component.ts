@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { Task } from '../../models/task.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -11,23 +11,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
-  tasks = signal<Task[]>([
-    {
-      id: Date.now(),
-      title: 'Instalar Angular CLI',
-      completed: true,
-    },
-    {
-      id: Date.now(),
-      title: 'Crear Proyecto',
-      completed: false,
-    },
-    {
-      id: Date.now(),
-      title: 'Crear servicio',
-      completed: false,
-    },
-  ]);
+  tasks = signal<Task[]>([]);
 
   newTaskCtrl = new FormControl('', {
     nonNullable: true,
@@ -51,6 +35,21 @@ export class HomeComponent {
     }
     return tasks;
   })
+
+  constructor(){
+    effect(()=>{
+      const tasks = this.tasks();
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    })
+  }
+
+  ngOnInit(): void {
+    const storage = localStorage.getItem('tasks');
+    if(storage) {
+      const tasks = JSON.parse(storage);
+      this.tasks.set(tasks);
+    }
+  }
 
   changeHandler() {
     if (this.newTaskCtrl.invalid || !this.newTaskCtrl.value.trim().length)
